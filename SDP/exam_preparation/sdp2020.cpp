@@ -82,189 +82,123 @@ LinkedListNode *maxMonotonicSeq(LinkedListNode *list, size_t &size)
     return maxRoot;
 }
 
-int main()
-{
-    LinkedListNode *list = new LinkedListNode((2), new LinkedListNode((3), new LinkedListNode((2), new LinkedListNode((1), new LinkedListNode((0), new LinkedListNode((3), new LinkedListNode(2)))))));
-    size_t size = 0;
-    LinkedListNode *result = maxMonotonicSeq(list, size);
+// int main()
+// {
+//     LinkedListNode *list = new LinkedListNode((2), new LinkedListNode((3), new LinkedListNode((2), new LinkedListNode((1), new LinkedListNode((0), new LinkedListNode((3), new LinkedListNode(2)))))));
+//     size_t size = 0;
+//     LinkedListNode *result = maxMonotonicSeq(list, size);
 
-    while (size)
-    {
-        std::cout << result->data << " ";
-        result = result->next;
-        size--;
-    }
-    std::cout << std::endl;
-}
+//     while (size)
+//     {
+//         std::cout << result->data << " ";
+//         result = result->next;
+//         size--;
+//     }
+//     std::cout << std::endl;
+// }
 
 /* Напишете програма, която да получи като аргумент име на текстов файл,
 който съдържа произволен брой цели числа, разделени помежду си спразни символи (нов ред или интервал).
 Програмата трябва да добави тези числа в двоично наредено дърво, което не допуска повторения (т.е. при опит
 за добавяне на елемент, който вече съществува, дървото не се променя).
 След това, при подадено число N, програмата трябва да предостави на потребителя информация
-колко поддървета в така полученото дърво съдържат точно N елемента. Също така трябва да имате функция,
-която по подадено дърво и число K да изтрива това число от дървото, заедно с всички негови четни наследници */
+колко поддървета в така полученото дърво съдържат точно N елемента. */
 
-// #include <iostream>
-// #include <string>
-// #include <fstream>
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <queue>
 
-// struct Node
-// {
-//     int data;
-//     Node *left = nullptr;
-//     Node *right = nullptr;
-// };
+struct Node
+{
+    int data;
+    Node *left = nullptr;
+    Node *right = nullptr;
+    Node(int data, Node *left = nullptr, Node *right = nullptr) : data(data), left(left), right(right){};
+};
 
-// bool tryInsertRec(Node *&node, const int &elem)
-// {
-//     if (node == nullptr)
-//     {
-//         node = new Node{elem};
-//         return true;
-//     }
+bool tryInsertRec(Node *&node, const int &elem)
+{
+    if (node == nullptr)
+    {
+        node = new Node(elem);
+        return true;
+    }
 
-//     if (elem < node->data)
-//         return tryInsertRec(node->left, elem);
+    if (elem < node->data)
+        return tryInsertRec(node->left, elem);
 
-//     if (elem > node->data)
-//         return tryInsertRec(node->right, elem);
+    if (elem > node->data)
+        return tryInsertRec(node->right, elem);
 
-//     return false;
-// }
+    return false;
+}
 
-// void insertRec(Node *&node, const int &elem)
-// {
-//     if (!tryInsertRec(node, elem))
-//         throw std::logic_error("BST: Cannot store duplicate elements!");
-// }
+void readBST(const std::string &filename, Node *&node)
+{
+    std::ifstream file_info(filename);
+    if (file_info.is_open() && file_info.good())
+    {
+        int nextNode;
+        while (file_info >> nextNode)
+        {
+            if (!tryInsertRec(node, nextNode))
+                continue;
+        }
+    }
+    else
+    {
+        throw std::logic_error("BST: Error reading file!");
+    }
+}
+void print(const Node *node)
+{
+    if (node == nullptr)
+        return;
 
-// void readBST(const std::string &filename, Node *&node)
-// {
-//     std::ifstream file_info(filename);
-//     if (file_info.good())
-//     {
-//         int nextNode;
-//         while (file_info.good())
-//         {
-//             file_info >> nextNode;
-//             insertRec(node, nextNode);
-//         }
-//     }
-// }
+    print(node->left);
+    std::cout << node->data << " ";
+    print(node->right);
+}
 
-// // void print(const Node *node)
-// // {
-// //     if (node == nullptr)
-// //         return;
+int countNodes(Node *root)
+{
+    if (root == nullptr)
+    {
+        return 0;
+    }
+    return countNodes(root->left) + countNodes(root->right) + 1;
+}
 
-// //     return print(node->left);
-// //     std::cout << node->data << " ";
-// //     return print(node->right);
-// // }
+int countSubtrees(Node *root, int n)
+{
+    if (root == nullptr)
+        return 0;
 
-// int countNodes(Node *root)
-// {
-//     if (root == nullptr)
-//     {
-//         return 0;
-//     }
-//     return countNodes(root->left) + countNodes(root->right) + 1;
-// }
+    int leftCount = countSubtrees(root->left, n);
+    int rightCount = countSubtrees(root->right, n);
+    int currCount = (root->left ? countNodes(root->left) : 0) + (root->right ? countNodes(root->right) : 0) + 1;
+    if (currCount == n)
+    {
+        return leftCount + rightCount + 1;
+    }
+    return leftCount + rightCount;
+}
 
-// int countSubtrees(Node *root, int n)
-// {
-//     if (root == nullptr)
-//         return 0;
-
-//     int leftCount = countSubtrees(root->left, n);
-//     int rightCount = countSubtrees(root->right, n);
-//     int currCount = (root->left ? countNodes(root->left) : 0) + (root->right ? countNodes(root->right) : 0) + 1;
-//     if (currCount == n)
-//     {
-//         return leftCount + rightCount + 1;
-//     }
-//     return leftCount + rightCount;
-// }
-
-// Node *deleteNode(Node *root, int data)
-// {
-//     if (root == nullptr)
-//         return nullptr;
-
-//     if (data < root->data)
-//         root->left = deleteNode(root->left, data);
-
-//     else if (data > root->data)
-//         root->right = deleteNode(root->right, data);
-
-//     else
-//     {
-//         if (root->left == nullptr)
-//         {
-//             Node *temp = root->right;
-//             delete root;
-//             return temp;
-//         }
-//         else if (root->right == nullptr)
-//         {
-//             Node *temp = root->left;
-//             delete root;
-//             return temp;
-//         }
-//         Node *successor = root->right;
-//         while (successor->left != nullptr)
-//         {
-//             successor = successor->left;
-//         }
-//         root->data = successor->data;
-//         root->right = deleteNode(root->right, successor->data);
-//     }
-//     return root;
-// }
-
-// Node *deleteTree(Node *root)
-// {
-//     if (root == nullptr)
-//         return nullptr;
-
-//     root->left = deleteTree(root->left);
-//     root->right = deleteTree(root->right);
-//     delete root;
-//     return nullptr;
-// }
-
-// Node *deleteEvenDescendants(Node *root, int data)
-// {
-//     if (root == nullptr)
-//         return nullptr;
-
-//     if (data < root->data)
-//         root->left = deleteEvenDescendants(root->left, data);
-
-//     else if (data > root->data)
-//         root->right = deleteEvenDescendants(root->right, data);
-
-//     else
-//     {
-//         if (root->data % 2 == 0)
-//         {
-//             root = deleteTree(root);
-//         }
-//         else
-//         {
-//             root->left = deleteEvenDescendants(root->left, data);
-//             root->right = deleteEvenDescendants(root->right, data);
-//         }
-//     }
-//     return root;
-// }
 
 // int main()
 // {
-//             Node *root;
-//             readBST("bstTest.txt", root);
-//             print(root);
+//     Node *root = nullptr;
+//     readBST("bstTest.txt", root);
+//     print(root);
+//     std::cout << std::endl;
+//     int n;
+//     std::cout << "Enter n: ";
+//     std::cin >> n;
+//     size_t countSubTree = countSubtrees(root, n);
+//     std::cout << "countSubTrees: " << countSubTree << std::endl;
+
+//     return 0;
 // }
 
 /* Задача: Да се реализира работа с разредени матрици. Това са матрици,
@@ -294,132 +228,132 @@ C) Въведете данни за вектор с M елемента. Умно
 подредени в нарастващ ред, след това нечетните елементи, подредени в намаляващ ред.
 Също така премахнете повтарящите се елементи. Демонстрирайте функцията в кратка програма.
 В тази задача не можете да използвате класовете от стандартната библиотека.*/
-// #include <iostream>
+#include <iostream>
 
-// struct LinkedListNode
-// {
-//     int data;
-//     LinkedListNode *next;
-//     LinkedListNode(int data, LinkedListNode *next = nullptr) : data(data), next(next){};
-// };
+struct LinkedListNode
+{
+    int data;
+    LinkedListNode *next;
+    LinkedListNode(int data, LinkedListNode *next = nullptr) : data(data), next(next){};
+};
 
-// void insertFrom(LinkedListNode *&list, int elem)
-// {
-//     if (list == nullptr)
-//         list = new LinkedListNode(elem);
-//     else
-//     {
-//         LinkedListNode *newNode = new LinkedListNode(elem, list);
-//         list = newNode;
-//     }
-// }
+void insertFrom(LinkedListNode *&list, int elem)
+{
+    if (list == nullptr)
+        list = new LinkedListNode(elem);
+    else
+    {
+        LinkedListNode *newNode = new LinkedListNode(elem, list);
+        list = newNode;
+    }
+}
 
-// void insertAfter(LinkedListNode *&list, int elem)
-// {
-//     if (list == nullptr)
-//         list = new LinkedListNode(elem);
-//     else
-//     {
-//         LinkedListNode *temp = list;
-//         while (list->next)
-//         {
-//             list = list->next;
-//         }
-//         LinkedListNode *newNode = new LinkedListNode(elem);
-//         list->next = newNode;
-//         list = temp;
-//     }
-// }
-// void print(LinkedListNode *list)
-// {
-//     while (list)
-//     {
-//         std::cout << list->data << " ";
-//         list = list->next;
-//     }
-//     std::cout << std::endl;
-// }
+void insertAfter(LinkedListNode *&list, int elem)
+{
+    if (list == nullptr)
+        list = new LinkedListNode(elem);
+    else
+    {
+        LinkedListNode *temp = list;
+        while (list->next)
+        {
+            list = list->next;
+        }
+        LinkedListNode *newNode = new LinkedListNode(elem);
+        list->next = newNode;
+        list = temp;
+    }
+}
+void print(LinkedListNode *list)
+{
+    while (list)
+    {
+        std::cout << list->data << " ";
+        list = list->next;
+    }
+    std::cout << std::endl;
+}
 
-// LinkedListNode *sortEvenElements(LinkedListNode *list)
-// {
-//     LinkedListNode *tempEvenElements = list;
-//     LinkedListNode *resultEvenElement = nullptr;
-//     while (tempEvenElements->data % 2 != 0)
-//     {
-//         tempEvenElements = tempEvenElements->next;
-//     }
-//     resultEvenElement = new LinkedListNode(tempEvenElements->data);
-//     tempEvenElements = tempEvenElements->next;
-//     while (tempEvenElements)
-//     {
-//         if (tempEvenElements->data % 2 == 0)
-//         {
-//             if (resultEvenElement->data < tempEvenElements->data)
-//             {
-//                 insertAfter(resultEvenElement, tempEvenElements->data);
-//             }
-//             else if (resultEvenElement->data > tempEvenElements->data)
-//             {
-//                 insertFrom(resultEvenElement, tempEvenElements->data);
-//             }
-//         }
-//         tempEvenElements = tempEvenElements->next;
-//     }
-//     return resultEvenElement;
-// }
+LinkedListNode *sortEvenElements(LinkedListNode *list)
+{
+    LinkedListNode *tempEvenElements = list;
+    LinkedListNode *resultEvenElement = nullptr;
+    while (tempEvenElements->data % 2 != 0)
+    {
+        tempEvenElements = tempEvenElements->next;
+    }
+    resultEvenElement = new LinkedListNode(tempEvenElements->data);
+    tempEvenElements = tempEvenElements->next;
+    while (tempEvenElements)
+    {
+        if (tempEvenElements->data % 2 == 0)
+        {
+            if (resultEvenElement->data < tempEvenElements->data)
+            {
+                insertAfter(resultEvenElement, tempEvenElements->data);
+            }
+            else if (resultEvenElement->data > tempEvenElements->data)
+            {
+                insertFrom(resultEvenElement, tempEvenElements->data);
+            }
+        }
+        tempEvenElements = tempEvenElements->next;
+    }
+    return resultEvenElement;
+}
 
-// LinkedListNode *sortOddElements(LinkedListNode *list)
-// {
-//     LinkedListNode *tempOddElements = list;
-//     LinkedListNode *resultOddElement = nullptr;
-//     while (tempOddElements->data % 2 == 0)
-//     {
-//         tempOddElements = tempOddElements->next;
-//     }
-//     resultOddElement = new LinkedListNode(tempOddElements->data);
-//     tempOddElements = tempOddElements->next;
+LinkedListNode *sortOddElements(LinkedListNode *list)
+{
+    LinkedListNode *tempOddElements = list;
+    LinkedListNode *resultOddElement = nullptr;
+    while (tempOddElements->data % 2 == 0)
+    {
+        tempOddElements = tempOddElements->next;
+    }
+    resultOddElement = new LinkedListNode(tempOddElements->data);
+    tempOddElements = tempOddElements->next;
 
-//     while (tempOddElements)
-//     {
-//         if (tempOddElements->data % 2 != 0)
-//         {
-//             if (resultOddElement->data < tempOddElements->data)
-//             {
-//                 insertFrom(resultOddElement, tempOddElements->data);
-//             }
-//             else if (resultOddElement->data > tempOddElements->data)
-//             {
-//                 insertAfter(resultOddElement, tempOddElements->data);
-//             }
-//         }
-//         tempOddElements = tempOddElements->next;
-//     }
-//     return resultOddElement;
-// }
-// LinkedListNode *sortForSpecificWayList(LinkedListNode *list)
-// {
-//     LinkedListNode *result = nullptr;
-//     LinkedListNode *oddList = nullptr;
-//     LinkedListNode *evenList = nullptr;
-//     if (list->data % 2 != 0)
-//     {
-//         oddList = sortOddElements(list);
-//         evenList = sortEvenElements(list);
-//     }
-//     else
-//     {
-//         evenList = sortEvenElements(list);
-//         oddList = sortOddElements(list);
-//     }
-//     result = evenList;
+    while (tempOddElements)
+    {
+        if (tempOddElements->data % 2 != 0)
+        {
+            if (resultOddElement->data < tempOddElements->data)
+            {
+                insertFrom(resultOddElement, tempOddElements->data);
+            }
+            else if (resultOddElement->data > tempOddElements->data)
+            {
+                insertAfter(resultOddElement, tempOddElements->data);
+            }
+        }
+        tempOddElements = tempOddElements->next;
+    }
+    return resultOddElement;
+}
+LinkedListNode *sortForSpecificWayList(LinkedListNode *list)
+{
+    LinkedListNode *result = nullptr;
+    LinkedListNode *oddList = nullptr;
+    LinkedListNode *evenList = nullptr;
+    if (list->data % 2 != 0)
+    {
+        oddList = sortOddElements(list);
+        evenList = sortEvenElements(list);
+    }
+    else
+    {
+        evenList = sortEvenElements(list);
+        oddList = sortOddElements(list);
+    }
+    result = evenList;
 
-//     while (evenList->next)
-//     {
-//         evenList = evenList->next;
-//     }
-//     evenList->next = oddList;
-//     return result;
-// }
+    while (evenList->next)
+    {
+        evenList = evenList->next;
+    }
+    evenList->next = oddList;
+    return result;
+}
 
 // int main()
 // {
