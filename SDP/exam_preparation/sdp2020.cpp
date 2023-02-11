@@ -185,7 +185,6 @@ int countSubtrees(Node *root, int n)
     return leftCount + rightCount;
 }
 
-
 // int main()
 // {
 //     Node *root = nullptr;
@@ -211,17 +210,90 @@ C) Въведете данни за вектор с M елемента. Умно
 Опишете входния формат, който използвате.
 Той трябва да е еднозначен и да позволява въвеждане на произволни матрица и вектор, отговарящи на горното условие! */
 
-/*Задача: Разглеждаме дървета с данни цели числа и произволна разклоненост и наредба на децата.
-За всяко такова дърво са позволени две операции:
-- Размяна на стойностите в два възела, намиращи се на едно ниво
-- Размяна на два възела, които имат общ баща (това означава размяна на целите поддървета с корени в тези възли)
-Напишете функция, която по подадени две такива дървета:
-А) Проверява дали може чрез прилагане на тези две операции върху едното или двете от тях да се получат две еднакви дървета
-Б) (бонус) Намира най-малкия брой операции, с които това може да се получи.
-Демонстрирайте използването на функциите, като прочетете от стандартния вход двете дървета и
-изведете на екрана дали може да ги трансформирате до еднакви дървета.
-Опишете входния формат, който използвате. Той трябва да е еднозначен и да позволява въвеждане на произволно дърво,
-отговарящо на горното условие.*/
+// Тази задача chat gpt я написа, аз не се сещах как да я реша
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+
+bool checkLinearlyDependent(std::vector<std::vector<int>> &matrix, int row1, int row2)
+{
+    // Check if two rows are linearly dependent
+    for (int i = 0; i < matrix[0].size(); i++)
+    {
+        if (matrix[row1][i] * matrix[row2][i] != 0)
+            return false;
+    }
+    return true;
+}
+
+// int main()
+// {
+//     int n, m;
+//     std::cin >> n >> m;
+
+//     std::vector<std::vector<int>> matrix(n, std::vector<int>(m));
+//     std::unordered_map<int, int> rowMap;
+
+//     // Input the sparse matrix
+//     for (int i = 0; i < n; i++)
+//     {
+//         for (int j = 0; j < m; j++)
+//         {
+//             std::cin >> matrix[i][j];
+//             if (matrix[i][j] != 0)
+//             {
+//                 rowMap[i] = 1;
+//             }
+//         }
+//     }
+
+//     // Check for linearly dependent rows
+//     int linearlyDependentRow1 = -1, linearlyDependentRow2 = -1;
+//     for (auto i = rowMap.begin(); i != rowMap.end(); i++)
+//     {
+//         for (auto j = i; j != rowMap.end(); j++)
+//         {
+//             if (checkLinearlyDependent(matrix, i->first, j->first))
+//             {
+//                 linearlyDependentRow1 = i->first;
+//                 linearlyDependentRow2 = j->first;
+//                 break;
+//             }
+//         }
+//         if (linearlyDependentRow1 != -1)
+//             break;
+//     }
+
+//     // Output the result
+//     if (linearlyDependentRow1 != -1)
+//         std::cout << linearlyDependentRow1 << " " << linearlyDependentRow2 << std::endl;
+//     else
+//         std::cout << -1 << std::endl;
+
+//     // Input the vector
+//     std::vector<int> vec(m);
+//     for (int i = 0; i < m; i++)
+//         std::cin >> vec[i];
+
+//     // Multiply the vector by the matrix
+//     std::vector<int> result(n);
+//     for (int i = 0; i < n; i++)
+//     {
+//         for (int j = 0; j < m; j++)
+//         {
+//             result[i] += matrix[i][j] * vec[j];
+//         }
+//     }
+
+//     // Output the result
+//     for (int i = 0; i < n; i++)
+//     {
+//         std::cout << result[i] << " ";
+//     }
+//     std::cout << std::endl;
+
+//     return 0;
+// }
 
 /*Задача: Напишете функция, която получава като аргумент едносвързан списък с елементи цели числа.
 Функцията трябва да го сортира по следното правило - в началото на списъка трябва да останат четните елементи,
