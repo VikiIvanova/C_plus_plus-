@@ -1,9 +1,9 @@
-template<typename T>
+template <typename T>
 struct node
 {
     T data;
     node<T> *next;
-    node(): data(T()), next(nullptr){};
+    node() : data(T()), next(nullptr){};
 };
 /*Задача 1. Да се дефинира функция fillgaps, която приема като
   единствен параметър указател към линеен едносвързан списък от цели
@@ -264,7 +264,10 @@ bool isLetter(char c)
 {
     return 'a' <= c && c <= 'z';
 }
-bool isLetterQ(char c) { return isLetter(c) || c == '?'; }
+bool isLetterQ(char c)
+{
+    return isLetter(c) || c == '?';
+}
 
 bool valid(const std::string &s, unsigned &error)
 {

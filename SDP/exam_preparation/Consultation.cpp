@@ -1,19 +1,19 @@
-//Задача 1. Напишете функция която приема един аргумент – корен на дърво, 
-// чиито възли могат да имат произволен брой деца. Всеки възел пази стойност -- цяло число.
+// Задача 1. Напишете функция която приема един аргумент – корен на дърво,
+//  чиито възли могат да имат произволен брой деца. Всеки възел пази стойност -- цяло число.
 //
-// Функцията трябва да намери онзи път от корена на дървото, до някое листо, който има най-малка 
-// сума на елементите в него. Този път трябва да се върне, като вектор от възлите в него. 
-// Ако има няколко такива пътя, може да се върне който и да е от тях. Напишете кратка програма, 
-// която демонстрира работата на функцията върху примерно дърво. По-долу са дадени представянето 
-// на дървото и прототипът на функцията, която трябва да реализирате. Те трябва да са точно такива, 
-// както са показани тук.
+//  Функцията трябва да намери онзи път от корена на дървото, до някое листо, който има най-малка
+//  сума на елементите в него. Този път трябва да се върне, като вектор от възлите в него.
+//  Ако има няколко такива пътя, може да се върне който и да е от тях. Напишете кратка програма,
+//  която демонстрира работата на функцията върху примерно дърво. По-долу са дадени представянето
+//  на дървото и прототипът на функцията, която трябва да реализирате. Те трябва да са точно такива,
+//  както са показани тук.
 //
-// struct Node {
-//    int value;
-//    std::vector<Node> children;
-// };
+//  struct Node {
+//     int value;
+//     std::vector<Node> children;
+//  };
 //
-// std::vector<Node*> findCheapestPath( Node* root )
+//  std::vector<Node*> findCheapestPath( Node* root )
 
 #include <iostream>
 #include <vector>
@@ -24,19 +24,19 @@ struct Node
     std::vector<Node> children;
 };
 
-void findCheapestRec(Node* pNode, int currSum, 
-                     std::vector<Node*>& currPath, int& outMinSum, std::vector<Node*>& outMinPath)
+void findCheapestRec(Node *pNode, int currSum,
+                     std::vector<Node *> &currPath, int &outMinSum, std::vector<Node *> &outMinPath)
 {
-    if(!pNode)
-       return;
-    
+    if (!pNode)
+        return;
+
     currSum += pNode->value;
     currPath.push_back(pNode);
 
-    if(pNode->children.empty())
+    if (pNode->children.empty())
     {
-        //Base: The node is a leaf
-        if(currSum < outMinSum)
+        // Base: The node is a leaf
+        if (currSum < outMinSum)
         {
             outMinPath = currPath;
             outMinSum = currSum;
@@ -44,24 +44,24 @@ void findCheapestRec(Node* pNode, int currSum,
     }
     else
     {
-        //General case: Traverse the children
-        for(size_t i = 0; i < pNode->children.size(); i++)
+        // General case: Traverse the children
+        for (size_t i = 0; i < pNode->children.size(); i++)
         {
-            Node& child = pNode->children[i];
+            Node &child = pNode->children[i];
             findCheapestRec(&child, currSum, currPath, outMinSum, outMinPath);
         }
     }
-    //Last steps: Remove the currently visited node from our "global" path
+    // Last steps: Remove the currently visited node from our "global" path
     currPath.pop_back();
 }
 
-std::vector<Node*> findCheapestPath(Node* root)
+std::vector<Node *> findCheapestPath(Node *root)
 {
-    if(!root)
-       return {};
-    
-    std::vector<Node*> currPath;
-    std::vector<Node*> minPath;
+    if (!root)
+        return {};
+
+    std::vector<Node *> currPath;
+    std::vector<Node *> minPath;
     int minSum = std::numeric_limits<int>::max();
 
     findCheapestRec(root, 0, currPath, minSum, minPath);
@@ -71,16 +71,16 @@ std::vector<Node*> findCheapestPath(Node* root)
 
 int main()
 {
-    Node root = Node {5, {Node{8, {}}, Node{0, {}}, Node{11, {}}}};
+    Node root = Node{5, {Node{8, {}}, Node{0, {}}, Node{11, {}}}};
 
-    std::vector<Node*> vec = findCheapestPath(&root);
-    for(size_t i = 0; i < vec.size(); ++i)
+    std::vector<Node *> vec = findCheapestPath(&root);
+    for (size_t i = 0; i < vec.size(); ++i)
         std::cout << vec[i]->value << ' ';
 
     return 0;
 }
 
-/*//В града Имеяд могат да бъдат наблюдавани интересни явления. Целият град е съставен от множество обекти, които могат да бъдат посетени 
+/*//В града Имеяд могат да бъдат наблюдавани интересни явления. Целият град е съставен от множество обекти, които могат да бъдат посетени
 //(мислете си за кино, мол, бръснар). За съжаление, при всяко преминаване от един обект до друг се заплаща сурова цена – първата буква от името на човек!
 //За всеки един обект знаем до кои други обекти можем да стигнем и с коя специфична буква става това; съответно този преход може да направи само човек,
 //чието текущо (може би вече съкратено) име започва с тази буква. Например ако знаем, че от банка се стига до мол с буква ‘а’,
@@ -112,49 +112,48 @@ int main()
 
 using Graph = std::unordered_map<std::string, std::unordered_map<char, std::string>>;
 
-void ReadCity(const std::string& filename, Graph& city, std::string& start_point)
+void ReadCity(const std::string &filename, Graph &city, std::string &start_point)
 {
-    //prepare a file 
+    // prepare a file
     std::ifstream file_info(filename);
-    if(file_info.good())
+    if (file_info.good())
     {
         file_info >> start_point;
         std::string start_edge;
         std::string end_edge;
         char edge_value;
-        while(file_info.good())
+        while (file_info.good())
         {
             file_info >> start_edge;
             file_info >> end_edge;
             file_info >> edge_value;
-            
-            const auto& point_it = city.find(start_edge);
-            if(point_it == city.end())
+
+            const auto &point_it = city.find(start_edge);
+            if (point_it == city.end())
             {
                 city.insert({start_edge, {}});
             }
             city[start_edge].insert({edge_value, end_edge});
-
         }
     }
 }
 
-void FindAllPaths(std::string name, std::string start_point, 
-                   const Graph& city)
+void FindAllPaths(std::string name, std::string start_point,
+                  const Graph &city)
 {
-    const auto& point_it = city.find(start_point);
-    if(point_it != city.end() && !name.empty())
+    const auto &point_it = city.find(start_point);
+    if (point_it != city.end() && !name.empty())
     {
         bool found_path = false;
-        for(auto& edge : point_it->second)
+        for (auto &edge : point_it->second)
         {
-            if(name[0] == edge.first)
+            if (name[0] == edge.first)
             {
                 found_path = true;
                 FindAllPaths(name.substr(1), edge.second, city);
             }
         }
-        if(!found_path)
+        if (!found_path)
         {
             std::cout << start_point << std::endl;
         }

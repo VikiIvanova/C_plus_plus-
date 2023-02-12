@@ -67,6 +67,5 @@ int main()
 
     freeTree(regularTree);
     freeTree(binarySearchTree);
-    
-    return 0;
+ 
 }

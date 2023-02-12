@@ -6,35 +6,33 @@ BinTree), или с указател към корена на дървото. Д
 struct BinTreeNode
 {
     int data;
-    BinTreeNode* left;
-    BinTreeNode* right;
-    BinTreeNode(int data, BinTreeNode* left = nullptr, BinTreeNode* right = nullptr):data(data), left(left), right(right) {}
+    BinTreeNode *left;
+    BinTreeNode *right;
+    BinTreeNode(int data, BinTreeNode *left = nullptr, BinTreeNode *right = nullptr) : data(data), left(left), right(right) {}
 };
 
-int sumEvenHelper(BinTreeNode* root, int sum, int level)
+int sumEvenHelper(BinTreeNode *root, int sum, int level)
 {
-    if(root == nullptr)
-       return 0;
-    
-    if(level % 2 == 0 && root->left && !root->right)
-       return sum += root->data;
-    
-    return sumEvenHelper(root->left, sum, level + 1) + 
-           sumEvenHelper(root->right, sum, level + 1);
-    
+    if (root == nullptr)
+        return 0;
 
+    if (level % 2 == 0 && root->left && !root->right)
+        return sum += root->data;
+
+    return sumEvenHelper(root->left, sum, level + 1) +
+           sumEvenHelper(root->right, sum, level + 1);
 }
 
-int sumEvenLevelWithLeft(BinTreeNode* root)
+int sumEvenLevelWithLeft(BinTreeNode *root)
 {
-   return sumEvenHelper(root, 0, 0);
+    return sumEvenHelper(root, 0, 0);
 }
 
 // int main()
 // {
-//     BinTreeNode* tree = new BinTreeNode(1, new BinTreeNode(2, new BinTreeNode(4, new BinTreeNode(5))), 
+//     BinTreeNode* tree = new BinTreeNode(1, new BinTreeNode(2, new BinTreeNode(4, new BinTreeNode(5))),
 //                                         new BinTreeNode(3, new BinTreeNode(6, new BinTreeNode(8)), new BinTreeNode(7, new BinTreeNode(9))));
-    
+
 //     int sum = sumEvenLevelWithLeft(tree);
 //     std::cout << sum << std::endl;
 //     return 0;
@@ -53,14 +51,18 @@ int sumEvenLevelWithLeft(BinTreeNode* root)
 #include <unordered_set>
 #include <vector>
 
-bool match_path(const std::string &tree_path, const std::unordered_set<std::string> &graph_paths) {
+bool match_path(const std::string &tree_path, const std::unordered_set<std::string> &graph_paths)
+{
     return graph_paths.count(tree_path) > 0;
 }
 
-void find_path(const std::vector<std::string> &tree, int node, std::string path, 
-               const std::unordered_set<std::string> &graph_paths, std::string &result) {
-    if (node >= tree.size()) {
-        if (match_path(path, graph_paths)) {
+void find_path(const std::vector<std::string> &tree, int node, std::string path,
+               const std::unordered_set<std::string> &graph_paths, std::string &result)
+{
+    if (node >= tree.size())
+    {
+        if (match_path(path, graph_paths))
+        {
             result = path;
         }
         return;
@@ -93,59 +95,67 @@ void find_path(const std::vector<std::string> &tree, int node, std::string path,
 #include <iostream>
 #include <vector>
 
-struct Interval {
-  int start, end;
+struct Interval
+{
+    int start, end;
 };
 
-struct Node {
-  Interval interval;
-  int maxEnd;
-  Node *left, *right;
+struct Node
+{
+    Interval interval;
+    int maxEnd;
+    Node *left, *right;
 };
 
-Node* newNode(Interval i) {
-  Node *temp = new Node;
-  temp->interval = i;
-  temp->maxEnd = i.end;
-  temp->left = temp->right = nullptr;
-  return temp;
+Node *newNode(Interval i)
+{
+    Node *temp = new Node;
+    temp->interval = i;
+    temp->maxEnd = i.end;
+    temp->left = temp->right = nullptr;
+    return temp;
 }
 
-Node* insert(Node* root, Interval i) {
-  if (!root) return newNode(i);
+Node *insert(Node *root, Interval i)
+{
+    if (!root)
+        return newNode(i);
 
-  int mid = (i.start + i.end) / 2;
+    int mid = (i.start + i.end) / 2;
 
-  if (mid < root->interval.start)
-    root->left = insert(root->left, i);
-  else
-    root->right = insert(root->right, i);
+    if (mid < root->interval.start)
+        root->left = insert(root->left, i);
+    else
+        root->right = insert(root->right, i);
 
     root->maxEnd = std::max(root->maxEnd, i.end);
 
-  return root;
+    return root;
 }
 
-bool doOVerlap(Interval a, Interval b) {
-  if (a.start <= b.end && b.start <= a.end) 
-      return true;
-  return false;
+bool doOVerlap(Interval a, Interval b)
+{
+    if (a.start <= b.end && b.start <= a.end)
+        return true;
+    return false;
 }
 
-Interval maxInterval(Node* root) {
-  if (!root) return {0, 0};
+Interval maxInterval(Node *root)
+{
+    if (!root)
+        return {0, 0};
 
-  Interval result = root->interval;
+    Interval result = root->interval;
 
-  Interval leftResult = maxInterval(root->left);
-  if (doOVerlap(leftResult, result))
-    result = { std::min(leftResult.start, result.start), std::max(leftResult.end, result.end) };
+    Interval leftResult = maxInterval(root->left);
+    if (doOVerlap(leftResult, result))
+        result = {std::min(leftResult.start, result.start), std::max(leftResult.end, result.end)};
 
-  Interval rightResult = maxInterval(root->right);
-  if (doOVerlap(rightResult, result))
-    result = { std::min(rightResult.start, result.start), std::max(rightResult.end, result.end) };
+    Interval rightResult = maxInterval(root->right);
+    if (doOVerlap(rightResult, result))
+        result = {std::min(rightResult.start, result.start), std::max(rightResult.end, result.end)};
 
-  return result;
+    return result;
 }
 
 // int main() {
@@ -190,7 +200,7 @@ s1 и s2.
 class TrainStation
 {
 private:
-    std::vector<TrainStation*> adj;
+    std::vector<TrainStation *> adj;
     int numberStation;
     size_t capacity;
 
@@ -199,7 +209,7 @@ public:
     bool link(TrainStation station);
     unsigned int getLinkedStation(int i, std::vector<TrainStation> stations);
     int getNumberStation();
-    std::vector<TrainStation*> getAdj();
+    std::vector<TrainStation *> getAdj();
 };
 
 TrainStation::TrainStation(unsigned int numberStation, size_t capacity) : adj(0, 0), numberStation(numberStation), capacity(capacity) {}
@@ -233,7 +243,7 @@ unsigned int TrainStation::getLinkedStation(int i, std::vector<TrainStation> sta
         visited[current.numberStation] = true;
         result.push_back(current.numberStation);
 
-        for (auto& currentStation : current.adj)
+        for (auto &currentStation : current.adj)
         {
             if (!visited[currentStation->numberStation])
                 queue.push(*currentStation);
@@ -249,7 +259,7 @@ class Hub : public TrainStation
 
 class Terminal : public TrainStation
 {
-    size_t capacity = 50;
+    size_t capacity = 2;
 };
 
 int TrainStation::getNumberStation()
@@ -257,9 +267,9 @@ int TrainStation::getNumberStation()
     return numberStation;
 }
 
-std::vector<TrainStation*> TrainStation::getAdj()
+std::vector<TrainStation *> TrainStation::getAdj()
 {
-   return adj;
+    return adj;
 }
 
 bool connected(TrainStation s1, TrainStation s2, size_t countStations)
@@ -275,15 +285,15 @@ bool connected(TrainStation s1, TrainStation s2, size_t countStations)
         queue.pop();
 
         if (visited[current.getNumberStation()])
-              continue;
+            continue;
         visited[current.getNumberStation()] = true;
-        if(current.getNumberStation() == s2.getNumberStation())
+        if (current.getNumberStation() == s2.getNumberStation())
         {
             std::cout << "There is a path between s1 and s2!" << std::endl;
             return true;
         }
 
-        for (auto& currentStation : current.getAdj())
+        for (auto &currentStation : current.getAdj())
         {
             if (!visited[currentStation->getNumberStation()])
                 queue.push(*currentStation);

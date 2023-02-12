@@ -20,20 +20,24 @@
 
 using namespace std;
 
-struct TreeNode {
+struct TreeNode
+{
     char val;
-    vector<TreeNode*> children;
+    vector<TreeNode *> children;
     TreeNode(char x) : val(x) {}
 };
 
 // Function to create a tree from the input file
-TreeNode* createTree(ifstream &file) {
+TreeNode *createTree(ifstream &file)
+{
     char c;
     file >> c;
     TreeNode *node = new TreeNode(c);
 
-    while (file >> c && c != '>') {
-        if (c == '<') {
+    while (file >> c && c != '>')
+    {
+        if (c == '<')
+        {
             node->children.push_back(createTree(file));
         }
     }
@@ -41,31 +45,38 @@ TreeNode* createTree(ifstream &file) {
 }
 
 // Function to get the character sequence at a given level of the tree
-string levelOrder(TreeNode *root, int level) {
+string levelOrder(TreeNode *root, int level)
+{
     string result;
-    if (root == NULL) {
+    if (root == nullptr)
+    {
         return result;
     }
-    if (level == 1) {
+    if (level == 1)
+    {
         result += root->val;
         return result;
     }
 
-    for (int i = 0; i < root->children.size(); i++) {
+    for (int i = 0; i < root->children.size(); i++)
+    {
         result += levelOrder(root->children[i], level - 1);
     }
 
     return result;
 }
 
-int main(int argc, char *argv[]) {
-    if (argc != 2) {
+int main(int argc, char *argv[])
+{
+    if (argc != 2)
+    {
         cout << "Usage: " << argv[0] << " <file name>" << endl;
         return 0;
     }
 
     ifstream file(argv[1]);
-    if (!file) {
+    if (!file)
+    {
         cout << "File " << argv[1] << " not found" << endl;
         return 0;
     }
@@ -75,7 +86,8 @@ int main(int argc, char *argv[]) {
 
     int level;
     cout << "Enter level: ";
-    while (cin >> level) {
+    while (cin >> level)
+    {
         cout << "Result: " << levelOrder(root, level) << endl;
         cout << "Enter level: ";
     }
@@ -143,52 +155,51 @@ ListNode *isSplitCorrect(ListNode *list)
     return secondPartHead != nullptr ? secondPartHead : firstPartOfList;
 }
 
-ListNode* mergeLists( ListNode* head1, ListNode* head2 )
+ListNode *mergeLists(ListNode *head1, ListNode *head2)
 {
-	ListNode* resultList = nullptr;
-	ListNode* forward = head2;
-	ListNode* current = head2;
-	while ( forward->data < head1->data )
-	{
-		current = forward;
-		forward = forward->next;
-	}
-	if ( forward != head2 )
-	{
-		resultList = head2;
-		current->next = head1;
-		head2 = forward;
-	}
-	else
-	{
-		resultList = head1;
-	}
-	
-	while ( head2 )
-	{
-		if ( head1 && head1->data <= head2->data && head1->next && head2->data <= head1->next->data )
-		{
-			ListNode* ahead = head1->next;
-			head1->next = head2;
-			head1 = head1->next;
-			ListNode* currentNode = head2->next;
-			head2->next = ahead;
-			head2 =  currentNode;
-		}
-		else if ( head1 && head1->next )
-		{
-			head1 = head1->next;
-		}
-		else if ( head1 && !head1->next )
-		{
-			head1->next = head2;
-			break;
-		}
-	}
+    ListNode *resultList = nullptr;
+    ListNode *forward = head2;
+    ListNode *current = head2;
+    while (forward->data < head1->data)
+    {
+        current = forward;
+        forward = forward->next;
+    }
+    if (forward != head2)
+    {
+        resultList = head2;
+        current->next = head1;
+        head2 = forward;
+    }
+    else
+    {
+        resultList = head1;
+    }
 
-	return resultList;
+    while (head2)
+    {
+        if (head1 && head1->data <= head2->data && head1->next && head2->data <= head1->next->data)
+        {
+            ListNode *ahead = head1->next;
+            head1->next = head2;
+            head1 = head1->next;
+            ListNode *currentNode = head2->next;
+            head2->next = ahead;
+            head2 = currentNode;
+        }
+        else if (head1 && head1->next)
+        {
+            head1 = head1->next;
+        }
+        else if (head1 && !head1->next)
+        {
+            head1->next = head2;
+            break;
+        }
+    }
+
+    return resultList;
 }
-
 
 int main()
 {

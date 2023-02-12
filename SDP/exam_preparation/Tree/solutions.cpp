@@ -25,112 +25,115 @@ succ(x) = min{y | y е ключ на възел в T и y > x} // Наследн
 #include <assert.h>
 #include <algorithm>
 
-template<class T>
-std::optional<T> getMax(const Tree<T>* t)
+template <class T>
+std::optional<T> getMax(const Tree<T> *t)
 {
-    if(t == nullptr)
-       return {};
+	if (t == nullptr)
+		return {};
 
-    T res = t->data;
+	T res = t->data;
 
-    std::optinal<T> left = getMax(t->left);
-    std::optional<T> right = getMax(t->right);
-    
-    if(left.has_value())
-       res = std::max(res, left.value());
-    if(right.has_value())
-       res = std::max(res, right.value());
+	std::optinal<T> left = getMax(t->left);
+	std::optional<T> right = getMax(t->right);
 
-    return res;
+	if (left.has_value())
+		res = std::max(res, left.value());
+	if (right.has_value())
+		res = std::max(res, right.value());
+
+	return res;
 }
 
-bool isBSTRec(const Tree<int>* t, int min, int max)
+bool isBSTRec(const Tree<int> *t, int min, int max)
 {
-    if(t == nullptr)
-       return true;
-    if(t->data <= min || t->data >= max)
-       return false;
-    
-    return isBSTRec(t->left, min, t->data) && isBSTRec(t->right, t->data, max);
+	if (t == nullptr)
+		return true;
+	if (t->data <= min || t->data >= max)
+		return false;
+
+	return isBSTRec(t->left, min, t->data) && isBSTRec(t->right, t->data, max);
 }
 
-bool isBST(const Tree<int>* t)
+bool isBST(const Tree<int> *t)
 {
-    return isBSTRec(t, INT_MIN, INT_MAX);
+	return isBSTRec(t, INT_MIN, INT_MAX);
 }
 
-template<typename T>
-Tree<T>* buildFromRec(const std::vector<T>& v, int start, int end)
+template <typename T>
+Tree<T> *buildFromRec(const std::vector<T> &v, int start, int end)
 {
-    if(end < start)
-       return nullptr;
+	if (end < start)
+		return nullptr;
 
-    int mid = (end - start) / 2 + start;
+	int mid = (end - start) / 2 + start;
 
-    return new Tree<T>(v[mid], buildFromRec(v, start, mid - 1), buildFromRec(v, mid + 1, end));
+	return new Tree<T>(v[mid], buildFromRec(v, start, mid - 1), buildFromRec(v, mid + 1, end));
 }
 
-template<class T>
-Tree<T>* buildFrom(const std::vector<T>& v)
+template <class T>
+Tree<T> *buildFrom(const std::vector<T> &v)
 {
-    return buildFromRec(v, 0, v.size() - 1);
+	return buildFromRec(v, 0, v.size() - 1);
 }
 
-template<class T>
-bool isSameTree(const Tree<T>* fst, const Tree<T>* snd)
+template <class T>
+bool isSameTree(const Tree<T> *fst, const Tree<T> *snd)
 {
-    if(!fst && !snd)
-       return true;
-    if((fst && !snd) || (!fst && snd) || fst->data != snd->data)
-       return false;
-    
-    return isSameTree(fst->left, snd->left) && isSameTree(fst->right, snd->right);
+	if (!fst && !snd)
+		return true;
+	if ((fst && !snd) || (!fst && snd) || fst->data != snd->data)
+		return false;
+
+	return isSameTree(fst->left, snd->left) && isSameTree(fst->right, snd->right);
 }
 
-template<typename T>
-Tree<T>* clone(const Tree<T>* t)
+template <typename T>
+Tree<T> *clone(const Tree<T> *t)
 {
-    if(!t)
-       return nullptr;
-    
-    return new Tree<T>(t->data, clone(t->left), clone(t->right));
+	if (!t)
+		return nullptr;
+
+	return new Tree<T>(t->data, clone(t->left), clone(t->right));
 }
 
-template<class T>
-void rotateLeft(Tree<T>*& root) {
+template <class T>
+void rotateLeft(Tree<T> *&root)
+{
 	assert(root->right != nullptr);
 
-	Tree<T>* originalRight = root->right;
+	Tree<T> *originalRight = root->right;
 	root->right = originalRight->left;
 	originalRight->left = root;
 	root = originalRight;
 }
 
-template<class T>
-void rotateRight(Tree<T>*& root) {
+template <class T>
+void rotateRight(Tree<T> *&root)
+{
 	assert(root->left != nullptr);
 
-	Tree<T>* originalLeft = root->left;
+	Tree<T> *originalLeft = root->left;
 	root->left = originalLeft->right;
 	originalLeft->right = root;
 	root = originalLeft;
 }
 
-void rotationsTests() {
+void rotationsTests()
+{
 	std::vector<int> v;
 	for (size_t i = 0; i < 100; i++)
 		v.push_back(rand() % 100);
 
 	std::sort(v.begin(), v.end());
 
-	Tree<int>* example = buildFrom(v);
-	Tree<int>* exampleClone = clone(example);
+	Tree<int> *example = buildFrom(v);
+	Tree<int> *exampleClone = clone(example);
 
 	// Тестваме лява ротация:
 	// Тука не правя проверки за nullptr понеже не е това целта на този пример
-	Tree<int>* alpha = clone(example->left);
-	Tree<int>* beta  = clone(example->right->left);
-	Tree<int>* gamma = clone(example->right->right);
+	Tree<int> *alpha = clone(example->left);
+	Tree<int> *beta = clone(example->right->left);
+	Tree<int> *gamma = clone(example->right->right);
 
 	rotateLeft(example);
 
@@ -138,8 +141,10 @@ void rotationsTests() {
 	assert(isSameTree(beta, example->left->right));
 	assert(isSameTree(gamma, example->right));
 
-	freeTree(alpha); freeTree(beta); freeTree(gamma);
-	
+	freeTree(alpha);
+	freeTree(beta);
+	freeTree(gamma);
+
 	// Тествам дясна ротация
 	alpha = clone(example->left->left);
 	beta = clone(example->left->right);
@@ -151,7 +156,9 @@ void rotationsTests() {
 	assert(isSameTree(beta, example->right->left));
 	assert(isSameTree(gamma, example->right->right));
 
-	freeTree(alpha); freeTree(beta); freeTree(gamma);
+	freeTree(alpha);
+	freeTree(beta);
+	freeTree(gamma);
 
 	// Лявата ротация е симетрична на дясната следователно като направим лява + дясна трябва да остане същото дърво
 	assert(isSameTree(example, exampleClone));
@@ -160,6 +167,7 @@ void rotationsTests() {
 	freeTree(exampleClone);
 }
 
-int main() {
+int main()
+{
 	rotationsTests();
 }

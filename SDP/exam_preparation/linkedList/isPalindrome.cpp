@@ -1,36 +1,47 @@
 #include <iostream>
-struct LinkedListNode
+#include <stack>
+
+struct ListNode
 {
-    int data;
-    LinkedListNode *next;
-    LinkedListNode(int x, LinkedListNode *next = nullptr) : data(x), next(next) {}
+    int val;
+    ListNode *next;
+    ListNode(int x, ListNode* next = nullptr) : val(x), next(next) {}
 };
 
-bool isLinkedListPalRec(const LinkedListNode* begin, const LinkedListNode* end)
+bool isPalindrome(ListNode *head)
 {
-    if(end == nullptr)
-       return;
-    
-    bool res = isLinkedListPalRec(begin, end->next) && (begin->data == end->data);
-    begin = begin->next;
+    ListNode *slow = head, *fast = head;
+    std::stack<int> s;
 
-    return res;
+    while (fast != nullptr && fast->next != nullptr)
+    {
+        s.push(slow->val);
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    // If the number of nodes is odd, skip the middle node
+    if (fast != nullptr)
+    {
+        slow = slow->next;
+    }
+
+    while (slow != nullptr)
+    {
+        int top = s.top();
+        s.pop();
+        if (top != slow->val)
+        {
+            return false;
+        }
+        slow = slow->next;
+    }
+
+    return true;
 }
-
-bool isLinkedListPal(const LinkedListNode* l1)
-{
-    if(l1 == nullptr)
-      return true;
-    
-    const LinkedListNode* begin = l1;
-    const LinkedListNode* end = l1;
-
-    return isLinkedListPalRec(begin, end);
-}
-
 int main()
 {
-    LinkedListNode* ll = new LinkedListNode(0, new LinkedListNode(1, new LinkedListNode(1)));
+    ListNode *ll = new ListNode(1, new ListNode(2, new ListNode(1)));
 
-    std::cout << isLinkedListPal(ll);
+    std::cout << std::boolalpha <<  isPalindrome(ll) << std::endl;
 }

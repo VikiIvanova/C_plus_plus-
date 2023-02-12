@@ -1,69 +1,69 @@
-/*Конче стои върху шахматна дъска NxN. За начална и крайна позиция 
+/*Конче стои върху шахматна дъска NxN. За начална и крайна позиция
 да се изведе с колко най - малко хода можем да стигнем от началната до крайната.*/
 
 #include <iostream>
 #include <array>
 #include <queue>
 
-template<unsigned boardSize = 8>
+template <unsigned boardSize = 8>
 class minMoves
 {
     using position = std::pair<int, int>;
     using positionAndSteps = std::pair<position, int>;
-    using board = std::array<std::array<bool, boardSize>, boarderSize;
+    using board = std::array<std::array<bool, boardSize>, boardSize>;
 
     board playground;
 
     void cleanPlayground()
     {
-        for(auto& col : playground)
-           for(auto& pos : col)
-               pos = false;
+        for (auto &col : playground)
+            for (auto &pos : col)
+                pos = false;
     }
-    
-    static bool equalPositions(const position& fst, const position& snd)
+
+    static bool equalPositions(const position &fst, const position &snd)
     {
         return fst.first == snd.first && fst.second == snd.second;
     }
 
-    static bool isValidPos(const position& p)
+    static bool isValidPos(const position &p)
     {
         return p.first >= 0 && p.second >= 0 && p.first < boardSize && p.second < boardSize;
     }
 
-    void mark(const position& toMark)
+    void mark(const position &toMark)
     {
         return playground[pos.fisrt][pos.second] = true;
     }
 
-    bool isMarked(const position& pos) const
+    bool isMarked(const position &pos) const
     {
         return playground[pos.first][pos.second];
     }
 
-    void pushAndMarkIfValid(std::queue<positionAndSteps>& q, const position& toPush, int steps)
+    void pushAndMarkIfValid(std::queue<positionAndSteps> &q, const position &toPush, int steps)
     {
-        if(isValidPos(toPush) && !isMarked(toPush))
+        if (isValidPos(toPush) && !isMarked(toPush))
         {
             q.push({toPush, steps});
             mark(toPush);
         }
     }
 
-    int process(const position& startPos, const position& endPos)
+    int process(const position &startPos, const position &endPos)
     {
         std::queue<positionAndSteps> q;
 
         q.push({startPos, 0});
 
-        while(!q.empty())
+        while (!q.empty())
         {
             positionAndSteps currentPosition = q.front();
 
             q.pop();
 
-            if(equalPositions(currentPosition.first, endPos))
-               return currentPosition.second;
+            if (equalPositions(currentPosition.first, endPos))
+                return currentPosition.second;
             int x = currentPosition.first.first;
             int y = currentPosition.fisrt.second;
             int moves = currentPosition.second + 1;
@@ -80,16 +80,15 @@ class minMoves
         return -1;
     }
 
-    public:
-        minMoves() {cleanPlayground();}
+public:
+    minMoves() { cleanPlayground(); }
 
-        int getMinMoves(const position& start, const position& end)
-        {
-            cleanPlayground();
+    int getMinMoves(const position &start, const position &end)
+    {
+        cleanPlayground();
 
-            return process(start, end);
-        }
-
+        return process(start, end);
+    }
 };
 
 int main()
@@ -103,4 +102,3 @@ int main()
     minMoves<2> mt;
     std::cout << mt.getMinMoves({0, 0}, {12, 212});
 }
-

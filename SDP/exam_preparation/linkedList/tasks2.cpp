@@ -35,20 +35,20 @@ void pushFront(LinkedListNode *&result, int num)
     }
     else
     {
-        LinkedListNode* newNode = new LinkedListNode{num, result};
+        LinkedListNode *newNode = new LinkedListNode{num, result};
         result = newNode;
     }
 }
 
-void insertAfter(LinkedListNode*& currEndResult, int num)
+void insertAfter(LinkedListNode *&currEndResult, int num)
 {
-    if(currEndResult == nullptr)
+    if (currEndResult == nullptr)
     {
         currEndResult = new LinkedListNode{num, nullptr};
     }
     else
     {
-        LinkedListNode* newNode = new LinkedListNode{num, currEndResult->next};
+        LinkedListNode *newNode = new LinkedListNode{num, currEndResult->next};
         currEndResult->next = newNode;
         currEndResult = newNode;
     }
@@ -73,22 +73,22 @@ void reverseList(LinkedListNode *&list)
 LinkedListNode *shuffle(LinkedListNode *list)
 {
     LinkedListNode *result = nullptr;
-    LinkedListNode* current = list;
+    LinkedListNode *current = list;
     size_t sizeList = 0;
-    LinkedListNode* currEndResult = nullptr;
-    while(list)
+    LinkedListNode *currEndResult = nullptr;
+    while (list)
     {
-       sizeList++;
-       list = list->next;
+        sizeList++;
+        list = list->next;
     }
 
     insertAfter(currEndResult, current->data);
     current = current->next;
     result = currEndResult;
     size_t counter = 1;
-    if(sizeList % 2 == 0)
+    if (sizeList % 2 == 0)
     {
-        while(counter < sizeList / 2)
+        while (counter < sizeList / 2)
         {
             insertAfter(currEndResult, current->data);
             current = current->next;
@@ -97,14 +97,14 @@ LinkedListNode *shuffle(LinkedListNode *list)
     }
     else
     {
-        while(counter < sizeList / 2 + 1)
+        while (counter < sizeList / 2 + 1)
         {
             insertAfter(currEndResult, current->data);
             current = current->next;
             counter++;
         }
     }
-    while(current)
+    while (current)
     {
         pushFront(result, current->data);
         current = current->next;
@@ -133,17 +133,17 @@ v                             v
 #include <stack>
 #include <queue>
 
-template<typename T>
+template <typename T>
 struct listWithStackNode
 {
     T data;
-    listWithStackNode<T>* next = nullptr;
+    listWithStackNode<T> *next = nullptr;
 };
 
-size_t allElementInList(listWithStackNode<std::stack<int>>* list)
+size_t allElementInList(listWithStackNode<std::stack<int>> *list)
 {
     size_t count = 0;
-    while(list)
+    while (list)
     {
         count += list->data.size();
         list = list->next;
@@ -151,10 +151,10 @@ size_t allElementInList(listWithStackNode<std::stack<int>>* list)
     return count;
 }
 
-size_t countNodeinList(listWithStackNode<std::stack<int>>* list)
+size_t countNodeinList(listWithStackNode<std::stack<int>> *list)
 {
     size_t count = 0;
-    while(list)
+    while (list)
     {
         count++;
         list = list->next;
@@ -162,20 +162,20 @@ size_t countNodeinList(listWithStackNode<std::stack<int>>* list)
     return count;
 }
 
-listWithStackNode<std::stack<int>>* equalize(listWithStackNode<std::stack<int>>* list)
+listWithStackNode<std::stack<int>> *equalize(listWithStackNode<std::stack<int>> *list)
 {
-    listWithStackNode<std::stack<int>>* current = list;
+    listWithStackNode<std::stack<int>> *current = list;
     size_t countAllElementInList = allElementInList(list);
     size_t countNode = countNodeinList(list);
     size_t maxElementInStack = countAllElementInList / countNode;
 
     std::queue<int> temp;
 
-    while(current)
+    while (current)
     {
-        while(current->data.size() != maxElementInStack)
+        while (current->data.size() != maxElementInStack)
         {
-            while(current->data.size() > maxElementInStack)
+            while (current->data.size() > maxElementInStack)
             {
                 temp.push(current->data.top());
                 current->data.pop();
@@ -185,26 +185,24 @@ listWithStackNode<std::stack<int>>* equalize(listWithStackNode<std::stack<int>>*
                 current->data.push(temp.front());
                 temp.pop();
             }
-            
         }
         current = current->next;
     }
     return list;
 }
 
-
-void printList(listWithStackNode<std::stack<int>>* list)
+void printList(listWithStackNode<std::stack<int>> *list)
 {
-    listWithStackNode<std::stack<int>>* temp = list;
-    while(temp)
+    listWithStackNode<std::stack<int>> *temp = list;
+    while (temp)
     {
         std::stack<int> current;
-        while(!temp->data.empty())
+        while (!temp->data.empty())
         {
-          current.push(temp->data.top());
-          temp->data.pop();
+            current.push(temp->data.top());
+            temp->data.pop();
         }
-        while(!current.empty())
+        while (!current.empty())
         {
             std::cout << current.top() << " ";
             current.pop();
@@ -231,10 +229,10 @@ HINT:
 После, след като построите тези полезни помощни списъци,
 можете да пренасочите правилните указатели и да получите коректен отговор.*/
 
-void print(LinkedListNode* list)
+void print(LinkedListNode *list)
 {
-    LinkedListNode* temp = list;
-    while(temp)
+    LinkedListNode *temp = list;
+    while (temp)
     {
         std::cout << temp->data << " ";
         temp = temp->next;
@@ -242,45 +240,55 @@ void print(LinkedListNode* list)
     std::cout << std::endl;
 }
 
-LinkedListNode *partition(LinkedListNode *head, int x) {
-  LinkedListNode *beforeStart = nullptr;
-  LinkedListNode *beforeEnd = nullptr;
-  LinkedListNode *afterStart = nullptr;
-  LinkedListNode *afterEnd = nullptr;
+LinkedListNode *partition(LinkedListNode *head, int x)
+{
+    LinkedListNode *beforeStart = nullptr;
+    LinkedListNode *beforeEnd = nullptr;
+    LinkedListNode *afterStart = nullptr;
+    LinkedListNode *afterEnd = nullptr;
 
-  // Partition list
-  while (head != nullptr) {
-    LinkedListNode *next = head->next;
-    head->next = nullptr;
-    if (head->data < x) {
-      if (beforeStart == nullptr) {
-        beforeStart = head;
-        beforeEnd = beforeStart;
-      } else {
-        beforeEnd->next = head;
-        beforeEnd = head;
-      }
-    } else {
-      if (afterStart == nullptr) {
-        afterStart = head;
-        afterEnd = afterStart;
-      } else {
-        afterEnd->next = head;
-        afterEnd = head;
-      }
+    // Partition list
+    while (head != nullptr)
+    {
+        LinkedListNode *next = head->next;
+        head->next = nullptr;
+        if (head->data < x)
+        {
+            if (beforeStart == nullptr)
+            {
+                beforeStart = head;
+                beforeEnd = beforeStart;
+            }
+            else
+            {
+                beforeEnd->next = head;
+                beforeEnd = head;
+            }
+        }
+        else
+        {
+            if (afterStart == nullptr)
+            {
+                afterStart = head;
+                afterEnd = afterStart;
+            }
+            else
+            {
+                afterEnd->next = head;
+                afterEnd = head;
+            }
+        }
+        head = next;
     }
-    head = next;
-  }
 
-  if (beforeStart == nullptr) {
-    return afterStart;
-  }
+    if (beforeStart == nullptr)
+    {
+        return afterStart;
+    }
 
-  beforeEnd->next = afterStart;
-  return beforeStart;
+    beforeEnd->next = afterStart;
+    return beforeStart;
 }
-
-
 
 int main()
 {
@@ -300,22 +308,20 @@ int main()
     s3.push(10);
     s3.push(9);
     s3.push(8);
-  
+
     std::stack<int> s4;
     s4.push(12);
 
-    listWithStackNode<std::stack<int>>* list = new listWithStackNode<std::stack<int>>{s1,
-                        new listWithStackNode<std::stack<int>>{s2, 
-                         new listWithStackNode<std::stack<int>>{s3, 
-                         new listWithStackNode<std::stack<int>>{s4, nullptr 
-                         }}}};
-                         
+    listWithStackNode<std::stack<int>> *list = new listWithStackNode<std::stack<int>>{s1,
+                                                                                      new listWithStackNode<std::stack<int>>{s2,
+                                                                                                                             new listWithStackNode<std::stack<int>>{s3,
+                                                                                                                                                                    new listWithStackNode<std::stack<int>>{s4, nullptr}}}};
+
     printList(equalize(list));
 
-    LinkedListNode* l1 = new LinkedListNode(1, new LinkedListNode(4, new LinkedListNode(3, new LinkedListNode(2, new LinkedListNode(5, new LinkedListNode(2))))));
-    LinkedListNode* result = partition(l1, 3);
+    LinkedListNode *l1 = new LinkedListNode(1, new LinkedListNode(4, new LinkedListNode(3, new LinkedListNode(2, new LinkedListNode(5, new LinkedListNode(2))))));
+    LinkedListNode *result = partition(l1, 3);
     print(result);
-
 
     return 0;
 }
